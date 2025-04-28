@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="https://schema.org/SoftwareApplication">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Timestamp Converter - Unix/Epoch to Human Readable Date</title>
+    <meta name="description" content="Instant timestamp converter for developers. Convert between Unix epoch time and human-readable date with timezone support. Perfect for API debugging and log analysis.">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Dev Timestamp Converter",
+        "operatingSystem": "Web",
+        "applicationCategory": "Developer Tools",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --background: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Consolas', monospace;
+            line-height: 1.6;
+            background: var(--background);
+            color: #2c3e50;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .converter-section {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .result-box {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .tool-features {
+            margin: 25px 0;
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        @media (max-width: 768px) {
+            .converter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hidden SEO Content */
+        .seo-content {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Dev Timestamp Converter</h1>
+        
+        <!-- Main Converter -->
+        <div class="converter-section">
+            <div>
+                <input type="number" id="timestamp" placeholder="Unix Timestamp (e.g., 1717027200)">
+                <button onclick="convertTimestamp()">Convert to Date</button>
+            </div>
+            
+            <div>
+                <input type="datetime-local" id="dateTime">
+                <select id="timezone">
+                    <option value="local">Local Time</option>
+                    <option value="utc">UTC</option>
+                </select>
+                <button onclick="convertToTimestamp()">Convert to Timestamp</button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="result-box" id="humanDate"></div>
+        <div class="result-box" id="unixTimestamp"></div>
+
+        <!-- Quick Tools -->
+        <div class="tool-features">
+            <button onclick="copyTimestamp()">Copy Current Timestamp</button>
+            <button onclick="showTimeDiff()">Calculate Time Difference</button>
+            <button onclick="openDocs()">API Documentation</button>
+        </div>
+    </div>
+
+    <!-- SEO Content -->
+    <div class="seo-content">
+        <h1>Timestamp Converter Tool</h1>
+        <p>Free online tool for converting Unix epoch timestamps to human-readable dates and vice versa. Essential for developers working with APIs, databases, and log files.</p>
+        <h2>Features</h2>
+        <ul>
+            <li>Unix timestamp to date conversion</li>
+            <li>Date to timestamp conversion</li>
+            <li>Timezone support (UTC/Local)</li>
+            <li>Milliseconds precision</li>
+        </ul>
+    </div>
+
+<script>
+// Core Converter Functions
+function convertTimestamp() {
+    const timestamp = document.getElementById('timestamp').value;
+    const date = new Date(timestamp * 1000);
+    
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: document.getElementById('timezone').value === 'utc' ? 'UTC' : undefined
+    };
+    
+    document.getElementById('humanDate').innerHTML = `
+        <strong>Converted Date:</strong><br>
+        ${date.toLocaleString('en-US', options)}<br>
+        (${document.getElementById('timezone').value.toUpperCase()})
+    `;
+}
+
+function convertToTimestamp() {
+    const dateString = document.getElementById('dateTime').value;
+    const date = new Date(dateString);
+    
+    document.getElementById('unixTimestamp').innerHTML = `
+        <strong>Unix Timestamp:</strong><br>
+        ${Math.floor(date.getTime() / 1000)}<br>
+        <small>Milliseconds: ${date.getTime()}</small>
+    `;
+}
+
+// Helper Functions
+function copyTimestamp() {
+    const ts = Math.floor(Date.now() / 1000);
+    navigator.clipboard.writeText(ts);
+    alert(`Copied current timestamp: ${ts}`);
+}
+
+function showTimeDiff() {
+    const ts1 = prompt("Enter first timestamp:");
+    const ts2 = prompt("Enter second timestamp:");
+    const diff = Math.abs(ts1 - ts2);
+    
+    alert(`Time difference:\n${diff} seconds\n≈ ${Math.round(diff/60)} minutes\n≈ ${Math.round(diff/3600)} hours`);
+}
+
+function openDocs() {
+    window.open('#', '_blank'); // Add documentation link
+}
+
+// Event Listeners
+document.getElementById('timestamp').addEventListener('input', function(e) {
+    if(e.target.value.length > 10) {
+        document.getElementById('humanDate').innerHTML += `<br><small>Milliseconds detected</small>`;
+    }
+});
+
+// Initialize
+document.getElementById('dateTime').value = new Date().toISOString().slice(0,16);
+</script>
+
+<!-- Google Analytics (Optional) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXX');
+</script>
+
+</body>
+</html>
